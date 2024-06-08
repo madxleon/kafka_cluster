@@ -1,0 +1,25 @@
+# Используем Alpine Linux в качестве базового образа
+FROM alpine:latest
+
+# Устанавливаем необходимые зависимости (если они нужны вашему приложению)
+RUN apk add --no-cache \
+    bash \
+    libc6-compat
+
+# Устанавливаем рабочую директорию в контейнере
+WORKDIR /app
+
+# Копируем исполняемый файл из текущей директории хоста в контейнер
+COPY ./jikkou /app/jikkou
+COPY ./jaas.conf /etc/jikkou/jaas.conf
+COPY ./config /etc/jikkou/config
+COPY ./keystore.jks /etc/jikkou/keystore.jks
+COPY ./truststore.jks /etc/jikkou/truststore.jks
+
+
+# Делаем файл исполняемым
+RUN chmod +x /app/jikkou
+RUN /app/jikkou config set-context localhost --config-props=kafka.client.bootstrap.servers=kafka1:9091,kafka2:9092,kafka3:9093,kafka4:9094,kafka5:9095 --config-file=/etc/jikkou/jaas.conf 
+
+# Определяем команду по умолчанию для контейнера
+ENTRYPOINT ["/app/jikkou"]

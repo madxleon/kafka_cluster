@@ -1,0 +1,266 @@
+version: '3.8'
+
+services:
+
+
+  zookeeper:
+    container_name: zookeeper
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper
+    networks:
+      kafka-network:
+        ipv4_address: 192.168.1.10
+    ports:
+      - "2181:2181"
+      - "2182:2182"
+      - "2888:2888"
+      - "3888:3888"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 10s
+      retries: 3       
+    volumes:
+      - ./config/zookeeper_jaas.conf:/etc/zookeeper/zookeeper_jaas.conf      
+      - ./ssl/kafka.zookeeper.keystore.jks:/var/lib/zookeeper/kafka.zookeeper.keystore.jks
+      - ./ssl/kafka.zookeeper.truststore.jks:/var/lib/zookeeper/kafka.zookeeper.truststore.jks
+      - ./ssl/kafka.producer.keystore.jks:/var/lib/zookeeper/kafka.producer.keystore.jks
+      - ./ssl/kafka.producer.truststore.jks:/var/lib/zookeeper/kafka.producer.truststore.jks      
+      - ./config/zookeeper.properties:/etc/zookeeper/zookeeper.properties
+      - ./config/zookeeper-client.properties:/etc/zookeeper/zookeeper-client.properties
+    environment:
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/zookeeper/zookeeper_jaas.conf"
+    command: ["sh", "-c", "zookeeper-server-start /etc/zookeeper/zookeeper.properties"] 
+
+################################################################ Brokers #############################################################################
+      
+      
+  kafka1:
+    container_name: kafka1
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka1
+    networks:
+      kafka-network:
+        ipv4_address: 192.168.1.12
+    healthcheck:
+      test: ["CMD-SHELL", "ps augwwx | grep -q [S]upportedKafka"]    
+    ports:
+      - "9091:9091"
+      - "9081:9081"
+    environment:       
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafkaserver_jaas.conf"
+    volumes:
+      - ./config/kafkaserver_jaas.conf:/etc/kafka/kafkaserver_jaas.conf
+      - ./config/keystore_creds:/etc/kafka/secrets/keystore_creds
+      - ./config/kafka.broker1.properties:/etc/kafka/kafka.properties
+      - ./ssl/kafka.kafka1.keystore.jks:/etc/kafka/secrets/kafka.keystore.jks
+      - ./ssl/kafka.kafka1.truststore.jks:/etc/kafka/secrets/kafka.truststore.jks      
+    command: ["sh", "-c", "kafka-server-start /etc/kafka/kafka.properties"]
+
+  kafka2:
+    container_name: kafka2
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka2
+    networks:
+      kafka-network:
+        ipv4_address: 192.168.1.13
+    healthcheck:
+      test: ["CMD-SHELL", "ps augwwx | grep -q [S]upportedKafka"]    
+    ports:
+      - "9092:9092"
+      - "9082:9082"
+    environment:      
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafkaserver_jaas.conf"
+    volumes:
+      - ./config/kafkaserver2_jaas.conf:/etc/kafka/kafkaserver_jaas.conf
+      - ./config/keystore_creds:/etc/kafka/secrets/keystore_creds
+      - ./config/kafka.broker2.properties:/etc/kafka/kafka.properties
+      - ./ssl/kafka.kafka2.keystore.jks:/etc/kafka/secrets/kafka.keystore.jks
+      - ./ssl/kafka.kafka2.truststore.jks:/etc/kafka/secrets/kafka.truststore.jks      
+    command: ["sh", "-c", "kafka-server-start /etc/kafka/kafka.properties"]
+
+  kafka3:
+    container_name: kafka3
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka3
+    networks:
+      kafka-network:
+        ipv4_address: 192.168.1.14
+    healthcheck:
+      test: ["CMD-SHELL", "ps augwwx | grep -q [S]upportedKafka"]    
+    ports:
+      - "9093:9093"
+      - "9083:9083"
+    environment:      
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafkaserver_jaas.conf"
+    volumes:
+      - ./config/kafkaserver3_jaas.conf:/etc/kafka/kafkaserver_jaas.conf
+      - ./config/keystore_creds:/etc/kafka/secrets/keystore_creds
+      - ./config/kafka.broker3.properties:/etc/kafka/kafka.properties
+      - ./ssl/kafka.kafka3.keystore.jks:/etc/kafka/secrets/kafka.keystore.jks
+      - ./ssl/kafka.kafka3.truststore.jks:/etc/kafka/secrets/kafka.truststore.jks      
+    command: ["sh", "-c", "kafka-server-start /etc/kafka/kafka.properties"]
+ 
+  kafka4:
+    container_name: kafka4
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka4
+    networks:
+      kafka-network:
+        ipv4_address: 192.168.1.15
+    healthcheck:
+      test: ["CMD-SHELL", "ps augwwx | grep -q [S]upportedKafka"]    
+    ports:
+      - "9094:9094"
+      - "9084:9084"
+    environment:      
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafkaserver_jaas.conf"
+    volumes:
+      - ./config/kafkaserver4_jaas.conf:/etc/kafka/kafkaserver_jaas.conf
+      - ./config/keystore_creds:/etc/kafka/secrets/keystore_creds
+      - ./config/kafka.broker4.properties:/etc/kafka/kafka.properties
+      - ./ssl/kafka.kafka4.keystore.jks:/etc/kafka/secrets/kafka.keystore.jks
+      - ./ssl/kafka.kafka4.truststore.jks:/etc/kafka/secrets/kafka.truststore.jks      
+    command: ["sh", "-c", "kafka-server-start /etc/kafka/kafka.properties"]
+ 
+  kafka5:
+    container_name: kafka5
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka5
+    networks:
+      kafka-network:
+        ipv4_address: 192.168.1.16
+    healthcheck:
+      test: ["CMD-SHELL", "ps augwwx | grep -q [S]upportedKafka"]    
+    ports:
+      - "9095:9095"
+      - "9085:9085" 
+    environment:      
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafkaserver_jaas.conf"
+    volumes:
+      - ./config/kafkaserver5_jaas.conf:/etc/kafka/kafkaserver_jaas.conf
+      - ./config/keystore_creds:/etc/kafka/secrets/keystore_creds
+      - ./config/kafka.broker5.properties:/etc/kafka/kafka.properties
+      - ./ssl/kafka.kafka5.keystore.jks:/etc/kafka/secrets/kafka.keystore.jks
+      - ./ssl/kafka.kafka5.truststore.jks:/etc/kafka/secrets/kafka.truststore.jks      
+    command: ["sh", "-c", "kafka-server-start /etc/kafka/kafka.properties"]
+    
+#################################################################### Create Users #######################################################################################################    
+    
+  create_scram_users:
+    container_name: create_scram_users
+    image: confluentinc/cp-kafka:latest
+    hostname: producer
+    networks:
+      kafka-network:
+        ipv4_address: 192.168.1.21    
+    environment:       
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafkaserver_jaas.conf"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      BOOTSTRAP_SERVERS: kafka1:9091,kafka2:9092,kafka3:9093,kafka4:9094,kafka5:9095      
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512mb
+    depends_on:
+      - zookeeper
+    command: ["sh", "-c", "sleep 15 ; sh /etc/kafka/create_scram_users.sh"]
+    volumes:
+      - ./config/zookeeper_jaas.conf:/etc/zookeeper/zookeeper_jaas.conf
+      - ./config/kafkaserver_jaas.conf:/etc/kafka/kafkaserver_jaas.conf        
+      - ./ssl/kafka.zookeeper.keystore.jks:/var/lib/zookeeper/kafka.zookeeper.keystore.jks
+      - ./ssl/kafka.zookeeper.truststore.jks:/var/lib/zookeeper/kafka.zookeeper.truststore.jks
+      - ./ssl/kafka.producer.keystore.jks:/var/lib/zookeeper/kafka.producer.keystore.jks
+      - ./ssl/kafka.producer.truststore.jks:/var/lib/zookeeper/kafka.producer.truststore.jks      
+      - ./config/zookeeper.properties:/etc/zookeeper/zookeeper.properties
+      - ./config/zookeeper-client.properties:/etc/zookeeper/zookeeper-client.properties
+      - ./create_scram_users.sh:/etc/kafka/create_scram_users.sh  
+    
+    
+################################################################################ Console ################################################################################################   
+    
+  conduktor-console:
+    image: conduktor/conduktor-console:1.23.0
+    container_name: conduktor-console
+    hostname: conduktor-console
+    networks:
+      kafka-network:
+        ipv4_address: 192.168.1.17
+    depends_on:
+      - postgresql
+    ports:
+      - "8080:8080"
+    volumes:
+      - conduktor_data:/var/conduktor
+    environment:
+      CDK_DATABASE_URL: "postgresql://conduktor:change_me@postgresql:5432/conduktor-console"
+      CDK_CLUSTERS_0_ID: "local-kafka"
+      CDK_CLUSTERS_0_NAME: "local-kafka"
+      CDK_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka1:9091,kafka2:9092,kafka3:9093,kafka4:9094,kafka5:9095"
+      #CDK_CLUSTERS_0_SCHEMAREGISTRY_URL: "http://kafka1:18081"
+      CDK_CLUSTERS_0_COLOR: "#6A57C8"
+      CDK_CLUSTERS_0_ICON: "kafka"      
+      CDK_MONITORING_CORTEX-URL: http://conduktor-monitoring:9009/
+      #CDK_MONITORING_ALERT-MANAGER-URL: http://conduktor-monitoring:9010/
+      #CDK_MONITORING_CALLBACK-URL: http://conduktor-console:8080/monitoring/api/
+      #CDK_MONITORING_NOTIFICATIONS-CALLBACK-URL: http://localhost:8080
+      
+  # Conduktor stores its metadata in PostgreSQL.
+  # Consider using an external managed database for production usage.
+  # https://docs.conduktor.io/platform/get-started/configuration/database/
+  postgresql:
+    container_name: postgresql
+    networks:
+      kafka-network:
+        ipv4_address: 192.168.1.18
+    image: postgres:14
+    hostname: postgresql
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      PGDATA: "/var/lib/postgresql/data"
+      POSTGRES_DB: "conduktor-console"
+      POSTGRES_USER: "conduktor"
+      POSTGRES_PASSWORD: "change_me"
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+
+  # Conduktor uses Cortex to store Kafka and applications metrics as well as alerting.
+  # It is optional. 
+  # https://docs.conduktor.io/platform/get-started/configuration/cortex/
+  conduktor-monitoring:
+    container_name: conduktor-monitoring
+    hostname: conduktor-monitoring
+    image: conduktor/conduktor-console-cortex:1.23.0
+    ports:
+      - "9009:9009" # cortex api
+      - "9010:9010" # alertmanager api
+      - "9090:9090" # prometheus api    
+    environment:
+      CDK_CONSOLE-URL: "http://conduktor-console:8080"
+ 
+  jkkou:
+    container_name: jkkou
+    build:
+      context: ./jikkou/
+      dockerfile: dockerfile
+    image: jikkou:latest
+    networks:
+      kafka-network:       
+        ipv4_address: 192.168.1.9
+        
+volumes:
+    pg_data: {}
+    conduktor_data: {}
+    redpanda-0: {}
+
+
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
