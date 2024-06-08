@@ -1,10 +1,10 @@
 [![Typing SVG](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=Kafka+Cluster+из+5+брокеров)](https://git.io/typing-svg)
 
 
-*Авторизация между брокерами и Zookeeper по SSL
-*Авторизация между брокерами SASL_Plaintext
-*Присутствует UI Conductor
-*Есть Jikkou для удобного наката конфигурации
+- Авторизация между брокерами и Zookeeper по SSL
+- Авторизация между брокерами SASL_Plaintext
+- Присутствует UI Conductor
+- Есть Jikkou для удобного наката конфигурации
 
 
 
